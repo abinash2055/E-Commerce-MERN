@@ -1,4 +1,3 @@
-
 'use client'
 
 import { Card, CardContent } from '@/components/ui/card'
@@ -37,7 +36,7 @@ const EmailVerification = ({ params }) => {
         { isVerified ?
           <div>
             <div className="flex justify-center items-center">
-              <Image src={verifiedImg.src} height={verifiedImg.height} width={verifiedImg.width} />
+              <Image src={verifiedImg.src} height={verifiedImg.height} width={verifiedImg.width} className="h-[100px] w-auto" alt="Verification Successfull"/>
             </div>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-green-500 my-5">Email Verification Success!</h1>
@@ -48,7 +47,7 @@ const EmailVerification = ({ params }) => {
           </div> :
           <div>
             <div className="flex justify-center items-center">
-              <Image src={verificationFailedImg.src} height={verificationFailedImg.height} width={verificationFailedImg.width} />
+              <Image src={verificationFailedImg.src} height={verificationFailedImg.height} width={verificationFailedImg.width} className="h-[100px] w-auto" alt="Verification Failed" />
             </div>
             <div className="text-center">
               <h1 className="text-2xl font-bold text-red-500 my-5">Email Verification Failed!</h1>

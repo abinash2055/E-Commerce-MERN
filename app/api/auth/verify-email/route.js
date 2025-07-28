@@ -2,6 +2,7 @@ import { connectDB } from "@/lib/databaseConnection";
 import { catchError, response } from "@/lib/helperFunction";
 import UserModel from "@/models/User.model";
 import { jwtVerify } from "jose";
+import { isValidObjectId } from "mongoose";
 
 export async function POST(request) {
   try {
@@ -19,6 +20,15 @@ export async function POST(request) {
     const secret = new TextEncoder().encode(process.env.SECRET_KEY);
     const decoded = await jwtVerify(token, secret);
     const userId = decoded.payload.userId;
+
+    if(!isValidObjectId(userId)) {
+       return response(
+        false, 
+        400, 
+        "Invalid user id.",
+        userId
+        ); 
+    }
 
     // To Get User
     const user = await UserModel.findById(userId);

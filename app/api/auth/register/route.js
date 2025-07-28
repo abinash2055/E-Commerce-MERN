@@ -17,8 +17,8 @@ export async function POST(request) {
       password: true,
     });
 
-    const payload = await request.json();
-    const validatedData = validationSchema.safeParse(payload);
+   const payload = await request.json();
+   const validatedData = validationSchema.safeParse(payload);
 
     // If validation fails
     if (!validatedData.success) {
@@ -33,7 +33,7 @@ export async function POST(request) {
     const { name, email, password } = validatedData.data;
 
     // Check already registered user
-    const checkUser = await UserModel.exists({ email });
+    const checkUser = await UserModel.findOne({ email });
     if (checkUser) {
       return response(false, 409, "User already registered.");
     }
@@ -56,7 +56,7 @@ export async function POST(request) {
 
     // Send Verification Email
     await sendMail(
-      "Email Verification request from Developer Goswami",
+      "Email Verification request from Personal Signature",
       email,
       emailVerificationLink(
         `${process.env.NEXT_PUBLIC_BASE_URL}/auth/verify-email/${token}`

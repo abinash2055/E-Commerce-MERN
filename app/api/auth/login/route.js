@@ -35,7 +35,7 @@ export async function POST(request) {
       const { email, password } = validatedData.data;
 
       // To Get User Data
-      const getUser = await UserModel.findOne({ email });
+      const getUser = await UserModel.findOne({ deletedAt: null, email }).select("+password");
       if (!getUser) {
         return response(false, 400, "Invalid Login Credentials.");
       }

@@ -35,7 +35,11 @@ export async function POST(request) {
     // Check already registered user
     const checkUser = await UserModel.findOne({ email });
     if (checkUser) {
-      return response(false, 409, "User already registered.");
+      return response(
+        false, 
+        409, 
+        "User already registered."
+      );
     }
 
     // New Registration

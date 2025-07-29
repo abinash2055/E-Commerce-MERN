@@ -24,6 +24,7 @@ import { useForm } from "react-hook-form"
 import ButtonLoading from '@/components/Application/ButtonLoading'
 import Link from 'next/link'
 import { WEBSITE_REGISTER } from '@/routes/WebsiteRoute'
+import axios from 'axios'
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
@@ -44,8 +45,22 @@ const LoginPage = () => {
   });
 
   const handleLoginSubmit = async (values) => {
-    console.log(values);
-   }
+    try {
+      setLoading(true)
+      const { data: registerResponse } = await axios.post('/api/auth/login', values)
+
+      if (!registerResponse.success) {
+        throw new Error(registerResponse.message)
+      }
+
+      form.reset()
+      alert(registerResponse.message)
+    } catch (error) {
+      alert(error.message)
+    } finally {
+      setLoading(false)
+    }
+  }
 
   return (
     <div>
@@ -85,18 +100,18 @@ const LoginPage = () => {
                       <FormItem className="relative">
                         <FormLabel>Password</FormLabel>
                         <FormControl>
-                          <Input 
-                            type={isTypePassword ? 'password' : 'text'}  placeholder="********" {...field} />
+                          <Input
+                            type={isTypePassword ? 'password' : 'text'} placeholder="********" {...field} />
                         </FormControl>
-                            <button
-                              className='absolute top-1/2 right-2 cursor-pointer' 
-                              onClick={() => setIsTypePassword(!isTypePassword)}
-                              type='button'>
-                            {isTypePassword ? 
-                              <FaRegEyeSlash /> : 
-                              <FaRegEye />
-                            }              
-                            </button>
+                        <button
+                          className='absolute top-1/2 right-2 cursor-pointer'
+                          onClick={() => setIsTypePassword(!isTypePassword)}
+                          type='button'>
+                          {isTypePassword ?
+                            <FaRegEyeSlash /> :
+                            <FaRegEye />
+                          }
+                        </button>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -112,17 +127,17 @@ const LoginPage = () => {
                 <div className="text-center">
                   <div className="flex justify-center items-center gap-3">
                     <p>Don't have Account?</p>
-                    <Link 
+                    <Link
                       href={WEBSITE_REGISTER}
                       className="text-primary underline">
-                        Create account!
+                      Create account!
                     </Link>
                   </div>
                   <div className='mt-3'>
                     <Link
                       href=""
                       className="text-primary underline">
-                        Forgot Password?
+                      Forgot Password?
                     </Link>
                   </div>
                 </div>

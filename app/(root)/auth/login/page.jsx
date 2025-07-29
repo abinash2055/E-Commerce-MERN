@@ -25,6 +25,7 @@ import ButtonLoading from '@/components/Application/ButtonLoading'
 import Link from 'next/link'
 import { WEBSITE_REGISTER } from '@/routes/WebsiteRoute'
 import axios from 'axios'
+import { showToast } from '@/lib/showToast'
 
 const LoginPage = () => {
   const [loading, setLoading] = useState(false);
@@ -45,21 +46,22 @@ const LoginPage = () => {
   });
 
   const handleLoginSubmit = async (values) => {
-    try {
-      setLoading(true)
-      const { data: registerResponse } = await axios.post('/api/auth/login', values)
+    showToast('success', 'Toast Success')
+    // try {
+    //   setLoading(true)
+    //   const { data: registerResponse } = await axios.post('/api/auth/login', values)
 
-      if (!registerResponse.success) {
-        throw new Error(registerResponse.message)
-      }
+    //   if (!registerResponse.success) {
+    //     throw new Error(registerResponse.message)
+    //   }
 
-      form.reset()
-      alert(registerResponse.message)
-    } catch (error) {
-      alert(error.message)
-    } finally {
-      setLoading(false)
-    }
+    //   form.reset()
+    //   alert(registerResponse.message)
+    // } catch (error) {
+    //   alert(error.message)
+    // } finally {
+    //   setLoading(false)
+    // }
   }
 
   return (

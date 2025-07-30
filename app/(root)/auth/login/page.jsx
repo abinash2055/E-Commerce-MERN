@@ -23,7 +23,7 @@ import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import ButtonLoading from '@/components/Application/ButtonLoading'
 import Link from 'next/link'
-import { WEBSITE_REGISTER } from '@/routes/WebsiteRoute'
+import { WEBSITE_REGISTER, WEBSITE_RESETPASSWORD } from '@/routes/WebsiteRoute'
 import axios from 'axios'
 import { showToast } from '@/lib/showToast'
 import OTPVerification from '@/components/Application/OTPVerification'
@@ -144,8 +144,8 @@ const LoginPage = () => {
                               type='button'>
                               {
                                 isTypePassword ?
-                                <FaRegEyeSlash /> :
-                                <FaRegEye />
+                                  <FaRegEyeSlash /> :
+                                  <FaRegEye />
                               }
                             </button>
                             <FormMessage />
@@ -171,7 +171,7 @@ const LoginPage = () => {
                       </div>
                       <div className='mt-3'>
                         <Link
-                          href=""
+                          href={WEBSITE_RESETPASSWORD}
                           className="text-primary underline">
                           Forgot Password?
                         </Link>
@@ -182,8 +182,8 @@ const LoginPage = () => {
               </div>
             </>
             :
-            <OTPVerification 
-              email={otpEmail} 
+            <OTPVerification
+              email={otpEmail}
               onSubmit={handleOtpVerification}
               loading={otpVerificationLoading} />
           }

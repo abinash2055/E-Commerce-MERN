@@ -43,7 +43,7 @@ const OTPVerification = ({ email, onSubmit, loading }) => {
     const resendOTP = async () => {
         try {
             setIsResendingOtp(true)
-            const { data: resendOtpResponse } = await axios.post('/api/auth/send-otp', {
+            const { data: resendOtpResponse } = await axios.post('/api/auth/resend-otp', {
                 email
             })
         

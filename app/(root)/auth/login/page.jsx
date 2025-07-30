@@ -27,8 +27,11 @@ import { WEBSITE_REGISTER } from '@/routes/WebsiteRoute'
 import axios from 'axios'
 import { showToast } from '@/lib/showToast'
 import OTPVerification from '@/components/Application/OTPVerification'
+import { useDispatch } from 'react-redux'
+import { login } from '@/store/reducer/authReducer'
 
 const LoginPage = () => {
+  const dispatch = useDispatch()
   const [loading, setLoading] = useState(false);
   const [otpVerificationLoading, setOtpVerificationLoading] = useState(false);
   const [isTypePassword, setIsTypePassword] = useState(true);
@@ -79,6 +82,9 @@ const LoginPage = () => {
 
       setOtpEmail('')
       showToast('success', otpResponse.message)
+
+      dispatch(login(otpResponse.data))
+
     } catch (error) {
       showToast('error', error.message)
     } finally {

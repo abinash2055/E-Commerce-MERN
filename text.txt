@@ -2,10 +2,10 @@
 
         # PART 1 completed
         # PART 2 working
-        # TIME   ::::  00 : 00: 00
+        # TIME   ::::  00 : 10: 04
         
 
---------------------------------------------------------
+-------------------------------------------------------------------------------------------
    # FOR USER
        # Email: abinashnathpandey@gmail.com 
        # Password: Abinash123@
@@ -13,11 +13,13 @@
    # FOR ADMIN
         # Email: pabinashnath@gmail.com 
         # Password: Abinash12345@
---------------------------------------------------------
+-------------------------------------------------------------------------------------------
 
-VS CODE => font family --> 
-        a.   "Fira Code, JetBrains Mono, Cascadia Code, Consolas, monospace"
-        b.   "Consolas, 'Courier New', monospace"
+   # VS CODE => font family --> 
+        # a. "Fira Code, JetBrains Mono, Cascadia Code, Consolas, monospace"
+        # b. "Consolas, 'Courier New', monospace"
 
---------------------------------------------------------
+-------------------------------------------------------------------------------------------
+
+   # CLOUDINARY SETUP, MEDIA MODEL & UPLOADING
 

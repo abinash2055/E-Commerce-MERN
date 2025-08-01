@@ -110,7 +110,7 @@ export const otpEmail = (otp) => {
 															<td class="pad" style="padding-bottom:5px;padding-left:5px;padding-right:5px;width:100%;">
 																<div align="center" class="alignment" style="line-height:10px">
 																	<div style="max-width: 250px;">
-                                                                        <img alt="reset-password" height="auto" src="https://res.cloudinary.com/do7xdfl3y/image/upload/v1737487850/next-ecommerce/rb_27348_hfzgxd.png" style="display: block; height: auto; border: 0; width: 100%;" title="reset-password" width="250" />
+                                                                        <img alt="reset-password" height="auto" src="https://res.cloudinary.com/dagybmwdx/image/upload/v1754033278/otp-email_ycwhca.webp" style="display: block; height: auto; border: 0; width: 100%;" title="reset-password" width="250" />
                                                                     </div>
 																</div>
 															</td>

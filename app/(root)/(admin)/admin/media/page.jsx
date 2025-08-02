@@ -3,6 +3,7 @@
 import BreadCrumb from '@/components/Application/Admin/BreadCrumb'
 import Media from '@/components/Application/Admin/Media'
 import UploadMedia from '@/components/Application/Admin/UploadMedia'
+import ButtonLoading from '@/components/Application/ButtonLoading'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -53,7 +54,6 @@ const MediaPage = () => {
     fetchNextPage,
     hasNextPage,
     isFetching,
-    isFetchingNextPage,
     status
   } = useInfiniteQuery({
     queryKey: ['media-data', deleteType],
@@ -119,7 +119,7 @@ const MediaPage = () => {
             </div> 
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pb-5">
 
           { selectedMedia.length > 0 &&
             <div className="py-2 px-3 bg-violet-200 rounded flex justify-between items-center">
@@ -181,7 +181,11 @@ const MediaPage = () => {
               </div>
             </>
         }
-        
+
+        { hasNextPage && 
+          <ButtonLoading type="button" loading={ isFetching } className="cursor-pointer" onClick={() => fetchNextPage()} text="Load More" />
+        }
+
         </CardContent>
       </Card>
     </div>

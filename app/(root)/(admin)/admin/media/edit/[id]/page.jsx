@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { use } from 'react'
 
-const EditMedia = () => {
+const EditMedia = ({ params }) => {
+  const { id } = use(params)
   return (
     <div>EditMedia</div>
   )

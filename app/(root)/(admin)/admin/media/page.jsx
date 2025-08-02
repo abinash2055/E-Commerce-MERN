@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
+import useDeleteMutation from '@/hooks/useDeleteMutation'
 import { ADMIN_DASHBOARD, ADMIN_MEDIA_SHOW } from '@/routes/AdminPanelRoute'
 import { useInfiniteQuery } from '@tanstack/react-query'
 import axios from 'axios'
@@ -42,7 +43,6 @@ const MediaPage = () => {
 
   const fetchMedia = async (page, deleteType) => {
     const {data: response} = await axios.get(`/api/media?page=${page}&&limit=10&&deleteType=${deleteType}`)
-    console.log(response)
     return response
   }
 
@@ -64,8 +64,21 @@ const MediaPage = () => {
     }
   })
 
+  const deleteMutation = useDeleteMutation('media-data', '/api/media/delete')
+
   const handleDelete = (selectedMedia, deleteType) => {
-    //
+    let c = true
+
+    if ( deleteType === 'PD') {
+      c= confirm("Are you sure you want to delete the data (media) peermanently ?")
+    }
+
+    if (c) {
+      deleteMutation.mutate({ selectedMedia, deleteType })
+    }
+
+    setSelectAll(false)
+    setSelectedMedia([])
   }
 
   const handleSelectAll = () => {
@@ -118,7 +131,7 @@ const MediaPage = () => {
               </Label>
               <div className="flex gap-2">
                 { deleteType === 'SD' ?
-                  <Button variant="destructive" onClick = {() => handleDelete(selectedMedia, deleteType)}>
+                  <Button variant="destructive" onClick = {() => handleDelete(selectedMedia, deleteType)} className="cursor pointer">
                     Move Into Trash
                   </Button>  : 
                   <>

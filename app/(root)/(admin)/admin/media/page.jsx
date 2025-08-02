@@ -9,7 +9,7 @@ import { Checkbox } from '@/components/ui/checkbox'
 import { Label } from '@/components/ui/label'
 import useDeleteMutation from '@/hooks/useDeleteMutation'
 import { ADMIN_DASHBOARD, ADMIN_MEDIA_SHOW } from '@/routes/AdminPanelRoute'
-import { useInfiniteQuery } from '@tanstack/react-query'
+import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import Link from 'next/link'
 import { useSearchParams } from 'next/navigation'
@@ -22,6 +22,7 @@ const breadcrumbData = [
 
 const MediaPage = () => {
 
+  const queryClient = useQueryClient()
   const [deleteType, setDeleteType] = useState('SD')
   const [selectedMedia, setSelectedMedia] = useState([])
   const [selectAll, setSelectAll] = useState(false)
@@ -66,7 +67,7 @@ const MediaPage = () => {
 
   const deleteMutation = useDeleteMutation('media-data', '/api/media/delete')
 
-  const handleDelete = (selectedMedia, deleteType) => {
+  const handleDelete = (ids, deleteType) => {
     let c = true
 
     if ( deleteType === 'PD') {
@@ -74,7 +75,7 @@ const MediaPage = () => {
     }
 
     if (c) {
-      deleteMutation.mutate({ selectedMedia, deleteType })
+      deleteMutation.mutate({ ids, deleteType })
     }
 
     setSelectAll(false)
@@ -104,7 +105,7 @@ const MediaPage = () => {
               { deleteType === 'SD' ? 'Media' : 'Media Trash' }
             </h4>
             <div className='flex items-center gap-5'>
-              { deleteType === 'SD' && <UploadMedia /> }
+              {deleteType === 'SD' && <UploadMedia isMultiple={true} queryClient={queryClient } /> }
               <div className="flex gap-3">
                 { deleteType === 'SD' ? 
                   <Button type="button" variant="destructive">
@@ -154,7 +155,12 @@ const MediaPage = () => {
             <div className='text-red-500 text-sm'>
               {error.message}
             </div> :
-            <div className='grid lg:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-2 mb-5'>
+            <>
+              { data.pages.flatMap(page => page.mediaData.map(media => media._id)).length === 0 && 
+                <div>
+                  Data Not found.
+                </div>}
+              <div className='grid lg:grid-cols-5 sm:grid-cols-3 grid-cols-2 gap-2 mb-5'>
               {
                 data?.pages?.map((page, index) => (
                   <React.Fragment key={index}>
@@ -172,8 +178,10 @@ const MediaPage = () => {
                   </React.Fragment>
                 ))
               }
-            </div>
+              </div>
+            </>
         }
+        
         </CardContent>
       </Card>
     </div>

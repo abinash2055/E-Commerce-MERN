@@ -1,8 +1,7 @@
-import cloudinary from "@/lib/cloudinary";
 import { isAuthenticated } from "@/lib/authentication";
 import { connectDB } from "@/lib/databaseConnection";
 import { catchError, response } from "@/lib/helperFunction";
-import MediaModel from "@/models/Media.model";
+import CategoryModel from "@/models/Category.model";
 import mongoose from "mongoose";
 
 // PUT METHOD
@@ -31,13 +30,13 @@ export async function PUT(request) {
             )
         }
 
-        const media = await MediaModel.find({ _id: {$in: ids }}).lean()
-        if (!media.length) {
-            return response(
-                false, 
-                404, 
-                "Data not Found."
-            )
+        const category = await CategoryModel.find({ _id: {$in: ids }}).lean()
+        if (!category.length) {
+          return response(
+            false, 
+            404, 
+            "Data not Found."
+          );
         }
 
         if (!['SD', 'RSD'].includes(deleteType)) {
@@ -49,11 +48,11 @@ export async function PUT(request) {
         }
 
         if (deleteType === 'SD') {
-            await MediaModel.updateMany(
+            await CategoryModel.updateMany(
                 { _id: { $in: ids } }, 
                 { $set: { deletedAt: new Date().toISOString() } } )
         } else {
-            await MediaModel.updateMany(
+            await CategoryModel.updateMany(
               { _id: { $in: ids } },
               { $set: { deletedAt: null } }
             );
@@ -74,9 +73,6 @@ export async function PUT(request) {
 
 // DELETE METHOD
 export async function DELETE(request) {
-
-    const session = await mongoose.startSession()
-    session.startTransaction()
 
   try {
     const auth = await isAuthenticated("admin");
@@ -102,8 +98,8 @@ export async function DELETE(request) {
         )
     }
 
-    const media = await MediaModel.find({ _id: { $in: ids } }).session(session).lean();
-    if (!media.length) {
+    const category = await CategoryModel.find({ _id: { $in: ids } }).lean();
+    if (!category.length) {
       return response(
         false, 
         404, 
@@ -119,21 +115,7 @@ export async function DELETE(request) {
       );
     }
 
-      await MediaModel.deleteMany({ _id: { $in: ids } }).session(session)
-      
-
-      // Delete All Media from Cloudinary
-      const publicIds = media.map(m => m.public_id)
-
-      try {
-        await cloudinary.api.delete_resources(publicIds)
-      } catch (error) {
-        await session.abortTransaction()
-        session.endSession()
-      }
-
-      await session.commitTransaction()
-      session.endSession()
+      await CategoryModel.deleteMany({ _id: { $in: ids } })
 
       return response(
         true,
@@ -142,8 +124,6 @@ export async function DELETE(request) {
       )
 
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     return catchError(error);
   }
 }

@@ -1,7 +1,7 @@
 import { isAuthenticated } from "@/lib/authentication";
 import { connectDB } from "@/lib/databaseConnection";
 import { catchError, response } from "@/lib/helperFunction";
-import CategoryModel from "@/models/Category.model";
+import ProductModel from "@/models/Product.model";
 import { NextResponse } from "next/server";
 
 export async function GET(request) {
@@ -52,6 +52,20 @@ export async function GET(request) {
 
     // Aggregate pipeline
     const aggregatePipeline = [
+        {
+            $lookup: {
+                from: 'categories',
+                localField: 'category',
+                foreignField: '_id',
+                as: 'categoryData'
+            }
+        },
+        { 
+            $unwind: {
+                path: "$categoryData",
+                preserveNullAndEmptyArrays: true
+            }
+        },
         { $match: matchQuery }, 
         { $sort: Object.keys(sortQuery).length ? sortQuery : { createdAt: -1 } },
         { $skip: start }, 
@@ -61,6 +75,10 @@ export async function GET(request) {
                 _id: 1,
                 name: 1,
                 slug: 1,
+                mrp: 1,
+                sellingPrice: 1,
+                discountPercentage: 1,
+                category: "$categoryData.name",
                 createdAt: 1,
                 updatedAt: 1,
                 deletedAt: 1
@@ -69,16 +87,16 @@ export async function GET(request) {
     ]
 
     // Execute Query
-    const getCategory = await CategoryModel.aggregate(aggregatePipeline)
+    const getProduct = await ProductModel.aggregate(aggregatePipeline)
 
     // Get Total Row Count
-    const totalRowCount = await CategoryModel.countDocuments(matchQuery)
+    const totalRowCount = await ProductModel.countDocuments(matchQuery);
 
     return NextResponse.json({
-        success: true,
-        data: getCategory,
-        meta: { totalRowCount }
-    })
+      success: true,
+      data: getProduct,
+      meta: { totalRowCount },
+    });
         
     } catch (error) {
         return catchError(error)

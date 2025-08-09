@@ -10,56 +10,35 @@ import {
   CardContent, 
   CardHeader 
 } from '@/components/ui/card'
-import { DT_CATEGORY_COLUMN, DT_PRODUCT_COLUMN } from '@/lib/column'
+import { DT_PRODUCT_COLUMN} from '@/lib/column'
 import { columnConfig } from '@/lib/helperFunction'
 import { 
-  ADMIN_CATEGORY_ADD, 
-  ADMIN_CATEGORY_EDIT, 
-  ADMIN_CATEGORY_SHOW, 
   ADMIN_DASHBOARD, 
+  ADMIN_PRODUCT_ADD, 
+  ADMIN_PRODUCT_EDIT, 
+  ADMIN_PRODUCT_SHOW, 
   ADMIN_TRASH
 } from '@/routes/AdminPanelRoute'
 import Link from 'next/link'
-import { useSearchParams } from 'next/navigation'
 import React, { useCallback, useMemo } from 'react'
 import { FiPlus } from 'react-icons/fi'
 
 const breadcrumbData = [
   { href: ADMIN_DASHBOARD, label: 'Home' },
-  { href: ADMIN_TRASH, label: 'Trash' },
+  { href: ADMIN_PRODUCT_SHOW, label: 'Product' },
 ]
 
-const TRASH_CONFIG = {
-  category: {
-    title: 'Category Trash',
-    columns: DT_CATEGORY_COLUMN,
-    fetchUrl: '/api/category',
-    exportUrl: '/api/category/export',
-    deleteUrl: '/api/category/delete'
-  },
-
-  product: {
-    title: 'Product Trash',
-    columns: DT_PRODUCT_COLUMN,
-    fetchUrl: '/api/product',
-    exportUrl: '/api/product/export',
-    deleteUrl: '/api/product/delete'
-  },
-}
-
-const Trash = () => {
-
-  const searchparams = useSearchParams()
-  const trashOf = searchparams.get('trashof')
-
-  const config = TRASH_CONFIG[trashOf];
+const ShowProduct = () => {
 
   const columns = useMemo(() => {
-    return columnConfig(config.columns, false, false, true)
+    return columnConfig(DT_PRODUCT_COLUMN)
   }, [])
 
   const action = useCallback((row, deleteType, handleDelete) => {
-    return [<DeleteAction key="delete" handleDelete={handleDelete} row={row} deleteType={deleteType} /> ]
+    let actionMenu = []
+    actionMenu.push( <EditAction key="edit" href={ADMIN_PRODUCT_EDIT(row.original._id)} />)
+    actionMenu.push( <DeleteAction key="delete" handleDelete={handleDelete} row={row} deleteType={deleteType} />)
+    return actionMenu
   }, [])
 
   return (
@@ -69,20 +48,24 @@ const Trash = () => {
       <Card className="pt-3 rounded shadow-sm gap-0">
         <CardHeader className="py-2 px-3 border-b [.border-b]:pb-2">
           <div className="flex justify-between items-center">
-            <h4 className="text-xl font-semibold">{config.title}</h4>
-             
+            <h4 className="text-xl font-semibold">Show Product</h4>
+              <Button>
+                <FiPlus />
+              <Link href={ADMIN_PRODUCT_ADD}>New Product</Link>
+              </Button>
           </div>
         </CardHeader>
 
         <CardContent className="px-0">
           <DatatableWrapper
-            queryKey={`${trashOf}-data-deleted`}
-            fetchUrl={config.fetchUrl}
+            queryKey="product-data"
+            fetchUrl="/api/product"
             initialPageSize={10}
             columnsConfig={columns}
-            exportEndpoint={config.exportUrl}
-            deleteEndpoint={config.deleteUrl}
-            deleteType="PD"
+            exportEndpoint="/api/product/export"
+            deleteEndpoint="/api/product/delete"
+            deleteType="SD"
+            trashView={`${ADMIN_TRASH}?trashof=product`}
             createAction={action}
            />
         </CardContent>
@@ -91,4 +74,4 @@ const Trash = () => {
   )
 }
 
-export default Trash 
+export default ShowProduct

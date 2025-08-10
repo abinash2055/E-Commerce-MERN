@@ -2,8 +2,8 @@
 
         # PART 1 completed
         # PART 2 working
-        # Category and Product Edit/ Update Part is not working
-        # TIME   ::::  09 : 05 : 15
+        # Category/ Product/ Product Variant / Coupon Edit Button Not Working
+        # TIME   ::::  09 : 35 : 35
         
 
 --------------------------------------------------------------------------------------------------------------------------------------------------

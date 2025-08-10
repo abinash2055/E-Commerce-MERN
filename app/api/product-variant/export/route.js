@@ -1,7 +1,7 @@
 import { catchError, response } from "@/lib/helperFunction";
 import { isAuthenticated } from "@/lib/authentication";
 import { connectDB } from "@/lib/databaseConnection";
-import ProductModel from "@/models/Product.model";
+import ProductVariantModel from "@/models/ProductVariant.model";
 
 export async function GET(request) {
   try {
@@ -19,11 +19,11 @@ export async function GET(request) {
       deletedAt: null,
     };
 
-    const getProduct = await ProductModel.find(filter)
-      .select('-media -description')
+    const getProductVariant = await ProductVariantModel.find(filter)
+      .select('-media ')
       .sort({ createdAt: -1 })
       .lean();
-    if (!getProduct) {
+    if (!getProductVariant) {
       return response(
         false, 
         404, 
@@ -35,7 +35,7 @@ export async function GET(request) {
       true, 
       200, 
       "Data Found.", 
-      getProduct
+      getProductVariant
     );
   } catch (error) {
     return catchError(error);

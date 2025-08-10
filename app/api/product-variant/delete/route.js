@@ -1,7 +1,7 @@
 import { isAuthenticated } from "@/lib/authentication";
 import { connectDB } from "@/lib/databaseConnection";
 import { catchError, response } from "@/lib/helperFunction";
-import ProductModel from "@/models/Product.model";
+import ProductVariantModel from "@/models/ProductVariant.model";
 import mongoose from "mongoose";
 
 // PUT METHOD
@@ -30,7 +30,9 @@ export async function PUT(request) {
             )
         }
 
-        const data = await ProductModel.find({ _id: {$in: ids }}).lean()
+        const data = await ProductVariantModel.find({
+          _id: { $in: ids },
+        }).lean();
         if (!data.length) {
           return response(
             false, 
@@ -48,11 +50,12 @@ export async function PUT(request) {
         }
 
         if (deleteType === 'SD') {
-            await ProductModel.updateMany(
-                { _id: { $in: ids } }, 
-                { $set: { deletedAt: new Date().toISOString() } } )
+            await ProductVariantModel.updateMany(
+              { _id: { $in: ids } },
+              { $set: { deletedAt: new Date().toISOString() } }
+            );
         } else {
-            await ProductModel.updateMany(
+            await ProductVariantModel.updateMany(
               { _id: { $in: ids } },
               { $set: { deletedAt: null } }
             );
@@ -98,7 +101,7 @@ export async function DELETE(request) {
         )
     }
 
-    const data = await ProductModel.find({ _id: { $in: ids } }).lean();
+    const data = await ProductVariantModel.find({ _id: { $in: ids } }).lean();
     if (!data.length) {
       return response(
         false, 
@@ -115,7 +118,7 @@ export async function DELETE(request) {
       );
     }
 
-      await ProductModel.deleteMany({ _id: { $in: ids } })
+      await ProductVariantModel.deleteMany({ _id: { $in: ids } });
 
       return response(
         true,

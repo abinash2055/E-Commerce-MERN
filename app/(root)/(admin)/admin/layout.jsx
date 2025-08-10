@@ -4,14 +4,14 @@ import Topbar from '@/components/Application/Admin/Topbar'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import React from 'react'
 
-const layout = ({ children }) => {
+const Layout = ({ children }) => {
     return (
-        <ThemeProvider 
+        <ThemeProvider
             attribute="class"
             defaultTheme="system"
             enableSystem
-            disableTransitionOnChange>
-                 
+            disableTransitionOnChange
+        >
             <SidebarProvider>
                 <AppSidebar />
                 <main className="md:w-[calc(100vw-16rem)]">
@@ -25,8 +25,7 @@ const layout = ({ children }) => {
                 </main>
             </SidebarProvider>
         </ThemeProvider>
-        
     )
 }
 
-export default layout 
+export default Layout

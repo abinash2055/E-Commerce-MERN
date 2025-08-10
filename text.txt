@@ -3,7 +3,7 @@
         # PART 1 completed
         # PART 2 working
         # Category/ Product/ Product Variant / Coupon Edit Button Not Working
-        # TIME   ::::  10 : 11 : 47
+        # TIME   ::::  11 : 07 : 43
         
 
 --------------------------------------------------------------------------------------------------------------------------------------------------

@@ -3,40 +3,32 @@
 import BreadCrumb from '@/components/Application/Admin/BreadCrumb'
 import DatatableWrapper from '@/components/Application/Admin/DatatableWrapper'
 import DeleteAction from '@/components/Application/Admin/DeleteAction'
-import EditAction from '@/components/Application/Admin/EditAction'
-import { Button } from '@/components/ui/button'
 import { 
   Card, 
   CardContent, 
   CardHeader 
 } from '@/components/ui/card'
-import { DT_COUPON_COLUMN } from '@/lib/column'
+import { DT_CUSTOMERS_COLUMN } from '@/lib/column'
 import { columnConfig } from '@/lib/helperFunction'
 import { 
-  ADMIN_COUPON_ADD,
-  ADMIN_COUPON_EDIT,
-  ADMIN_COUPON_SHOW,
   ADMIN_DASHBOARD, 
   ADMIN_TRASH
 } from '@/routes/AdminPanelRoute'
-import Link from 'next/link'
 import React, { useCallback, useMemo } from 'react'
-import { FiPlus } from 'react-icons/fi'
 
 const breadcrumbData = [
   { href: ADMIN_DASHBOARD, label: 'Home' },
-  { href: ADMIN_COUPON_SHOW, label: 'Coupon' },
+  { href: "", label: 'Customers' },
 ]
 
-const ShowCoupon = () => {
+const ShowCustomers = () => {
 
   const columns = useMemo(() => {
-    return columnConfig(DT_COUPON_COLUMN)
+    return columnConfig(DT_CUSTOMERS_COLUMN)
   }, [])
 
   const action = useCallback((row, deleteType, handleDelete) => {
     let actionMenu = []
-    actionMenu.push( <EditAction key="edit" href={ADMIN_COUPON_EDIT(row.original._id)} />)
     actionMenu.push( <DeleteAction key="delete" handleDelete={handleDelete} row={row} deleteType={deleteType} />)
     return actionMenu
   }, [])
@@ -48,24 +40,20 @@ const ShowCoupon = () => {
       <Card className="pt-3 rounded shadow-sm gap-0">
         <CardHeader className="py-2 px-3 border-b [.border-b]:pb-2">
           <div className="flex justify-between items-center">
-            <h4 className="text-xl font-semibold">Show Coupon</h4>
-              <Button>
-                <FiPlus />
-              <Link href={ADMIN_COUPON_ADD}>New Coupon</Link>
-              </Button>
+            <h4 className="text-xl font-semibold">Customers</h4>
           </div>
         </CardHeader>
 
         <CardContent className="px-0">
           <DatatableWrapper
-            queryKey="coupon-data"
-            fetchUrl="/api/coupon"
+            queryKey="customers-data"
+            fetchUrl="/api/customers"
             initialPageSize={10}
             columnsConfig={columns}
-            exportEndpoint="/api/coupon/export"
-            deleteEndpoint="/api/coupon/delete"
+            exportEndpoint="/api/customers/export"
+            deleteEndpoint="/api/customers/delete"
             deleteType="SD"
-            trashView={`${ADMIN_TRASH}?trashof=coupon`}
+            trashView={`${ADMIN_TRASH}?trashof=customers`}
             createAction={action}
            />
         </CardContent>
@@ -74,4 +62,4 @@ const ShowCoupon = () => {
   )
 }
 
-export default ShowCoupon
+export default ShowCustomers

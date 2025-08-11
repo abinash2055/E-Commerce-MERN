@@ -135,7 +135,7 @@ const AddProduct = () => {
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)}>
 
-              <div className='grid md:grid-cols-2 gap-5'>
+              <div className='grid md:grid-cols-2 grid-col-1 gap-5'>
                 <div>
                   <FormField
                     control={form.control}
@@ -276,7 +276,6 @@ const AddProduct = () => {
                         </span>
                       </div>
               </div>
-
 
               <div className="mb-3 mt-5">
                 <ButtonLoading

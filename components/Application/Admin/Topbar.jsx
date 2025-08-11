@@ -17,18 +17,22 @@ const Topbar = () => {
   return (
     <div className="fixed border h-14 w-full top-0 left-0 z-30 md:ps-72 md:pe-8 px-5 flex justify-between items-center bg-white dark:bg-card">
 
-      <div className="flex items-center md:hidden">
-        <Image src={logoBlack.src} height={50} width={logoBlack.width} className="block dark:hidden h-[50px] w-auto" alt="logo dark" />
-        <Image src={logoWhite.src} height={50} width={logoWhite.width} className="hidden dark:block h-[50px] w-auto" alt="logo white" />
+      <div className="flex items-center">
+          <Image src={logoBlack.src} height={50} width={logoBlack.width} className="block dark:hidden h-[50px] w-auto" alt="logo dark" />
+          <Image src={logoWhite.src} height={50} width={logoWhite.width} className="hidden dark:block h-[50px] w-auto" alt="logo white" />
       </div>
-      <div className="md:block hidden">
+      <div className='md:block hidden'>
         <AdminSearch />
       </div>
 
       <div className="flex items-center gap-2">
         <ThemeSwitch />
         <UserDropDown />
-        <Button onClick={toggleSidebar} type="button" size="icon" className="ms-2 md:hidden">
+        <Button
+          onClick={toggleSidebar}
+          type="button"
+          size="icon"
+          className="ms-2 md:hidden">
           <RiMenu4Fill />
         </Button>
       </div>

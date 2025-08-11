@@ -12,6 +12,8 @@ const AdminMobileSearch = () => {
                 type="button" 
                 size="icon"
                 onClick={() => setOpen(true)}
+                className="md:hidden"
+                variant="ghost" >
                 <IoIosSearch />
             </Button>
             <SearchModel open={open} setOpen={setOpen} />

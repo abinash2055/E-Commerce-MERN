@@ -7,6 +7,7 @@ import React, { useState } from 'react'
 import loading from '@/public/assets/images/loading.svg'
 import ModalMediaBlock from './ModalMediaBlock'
 import { showToast } from '@/lib/showToast'
+import ButtonLoading from '../ButtonLoading'
 
 const MediaModal = ({ open, setOpen, selectedMedia, setSelectedMedia, isMultiple }) => {
 
@@ -46,74 +47,86 @@ const MediaModal = ({ open, setOpen, selectedMedia, setSelectedMedia, isMultiple
 
         setPreviouslySelected(selectedMedia)
         setOpen(false)
-    } 
+    }
 
     return (
         <Dialog
-    open={open}
-    onOpenChange={() => setOpen(!open)}
->
-    <DialogContent
-        onInteractOutside={(e) => e.preventDefault()}
-        className="sm:max-w-[80%] h-screen p-0 py-10 bg-transparent border-0 shadow-none"
-    >
-        <DialogDescription className="hidden"></DialogDescription>
+            open={open}
+            onOpenChange={() => setOpen(!open)}
+        >
+            <DialogContent
+                onInteractOutside={(e) => e.preventDefault()}
+                className="sm:max-w-[80%] h-screen p-0 py-10 bg-transparent border-0 shadow-none"
+            >
+                <DialogDescription className="hidden"></DialogDescription>
 
-        <div className="h-[90vh] bg-white p-3 rounded shadow flex flex-col">
-            
-            {/* Header */}
-            <DialogHeader className="border-b pb-2">
-                <DialogTitle>Media Selection</DialogTitle>
-            </DialogHeader>
+                <div className="h-[90vh] bg-white dark:bg-card p-3 rounded shadow flex flex-col">
 
-            {/* Body */}
-            <div className="flex-1 overflow-auto py-2">
-                {isPending ? (
-                    <div className="flex justify-center items-center h-full">
-                        <Image src={loading} alt='loading' height={80} width={80} />
+                    {/* Header */}
+                    <DialogHeader className="border-b pb-2">
+                        <DialogTitle>Media Selection</DialogTitle>
+                    </DialogHeader>
+
+                    {/* Body */}
+                    <div className="flex-1 overflow-auto py-2">
+                        {isPending ? (
+                            <div className="flex justify-center items-center h-full">
+                                <Image src={loading} alt='loading' height={80} width={80} />
+                            </div>
+                        ) : isError ? (
+                            <div className="flex justify-center items-center h-full">
+                                <span className='text-red-500'>{error.message}</span>
+                            </div>
+                        ) : (
+                            <>
+                                <div className="grid lg:grid-cols-6 grid-cols-3 gap-2">
+                                    {data?.pages?.map((page, index) => (
+                                        <React.Fragment key={index}>
+                                            {page?.mediaData?.map((media) => (
+                                                <ModalMediaBlock
+                                                    key={media._id}
+                                                    media={media}
+                                                    selectedMedia={selectedMedia}
+                                                    setSelectedMedia={setSelectedMedia}
+                                                    isMultiple={isMultiple}
+                                                />
+                                            ))}
+                                        </React.Fragment>
+                                    ))}
+                                </div>
+                                { hasNextPage ?
+                                <div className='flex justify-center py-5'>
+                                    <ButtonLoading 
+                                        type="button" 
+                                        onClick={() => fetchNextPage()}
+                                        loading={isFetching}
+                                        text="Load More" />
+                                </div> :
+                                <p className='text-center py-5'>Nothing more to load.</p>
+                                }
+                            </>
+                        )}
                     </div>
-                ) : isError ? (
-                    <div className="flex justify-center items-center h-full">
-                        <span className='text-red-500'>{error.message}</span>
+
+                    {/* Footer */}
+                    <div className="h-12 pt-3 border-t flex justify-between">
+                        <Button type="button" variant="destructive" onClick={handleClear}>
+                            Clear All
+                        </Button>
+
+                        <div className="flex gap-5">
+                            <Button type="button" variant="secondary" onClick={handleClose}>
+                                Close
+                            </Button>
+
+                            <Button type="button" onClick={handleSelect}>
+                                Select
+                            </Button>
+                        </div>
                     </div>
-                ) : (
-                    <div className="grid lg:grid-cols-6 grid-cols-3 gap-2">
-                        {data?.pages?.map((page, index) => (
-                            <React.Fragment key={index}>
-                                {page?.mediaData?.map((media) => (
-                                    <ModalMediaBlock 
-                                        key={media._id}
-                                        media={media}
-                                        selectedMedia={selectedMedia}
-                                        setSelectedMedia={setSelectedMedia}
-                                        isMultiple={isMultiple}
-                                    />
-                                ))}
-                            </React.Fragment>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            {/* Footer */}
-            <div className="h-12 pt-3 border-t flex justify-between">
-                <Button type="button" variant="destructive" onClick={handleClear}>
-                    Clear All
-                </Button>
-
-                <div className="flex gap-5">
-                    <Button type="button" variant="secondary" onClick={handleClose}>
-                        Close
-                    </Button>
-
-                    <Button type="button" onClick={handleSelect}>
-                        Select
-                    </Button>
                 </div>
-            </div>
-        </div>
-    </DialogContent>
-</Dialog>
+            </DialogContent>
+        </Dialog>
 
     )
 }

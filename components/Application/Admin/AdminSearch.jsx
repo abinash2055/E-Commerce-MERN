@@ -8,8 +8,8 @@ const AdminSearch = () => {
     const [ open, setOpen ] = useState(false)
 
   return (
-    <div className='md:w-[350px]'>
-        <div className='flex justify-between items-center relative'>
+    <div className="md:w-[350px]">
+        <div className="flex justify-between items-center relative">
             <Input 
                 readonly 
                 className="rounded-full cursor-pointer"

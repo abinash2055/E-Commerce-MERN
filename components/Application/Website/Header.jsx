@@ -1,6 +1,6 @@
 'use client'
 
-import { USER_DASHBOARD, WEBSITE_HOME, WEBSITE_LOGIN } from '@/routes/WebsiteRoute'
+import { USER_DASHBOARD, WEBSITE_HOME, WEBSITE_LOGIN, WEBSITE_SHOP } from '@/routes/WebsiteRoute'
 import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
@@ -18,7 +18,7 @@ const Header = () => {
 
     const auth = useSelector(store => store.authStore.auth)
 
-    const [ isMobileMenu, setIsMobileMenu ] = useState(false)
+    const [isMobileMenu, setIsMobileMenu] = useState(false)
 
     return (
         <div className="bg-white border-b lg:px-32 px-4">
@@ -33,10 +33,10 @@ const Header = () => {
                 </Link>
 
                 <div className="lg:flex justify-between gap-20">
-                    <nav 
-                        className={`lg:relative lg:w-auto lg:h-auto lg:top-0 lg:left-0 lg:p-0 bg-white fixed z-50 top-0 w-full h-screen transition-all ${isMobileMenu ? 'left-0' : "-left-full"}`}>
+                    <nav
+                        className={`bg-white z-50 transition-all lg:relative lg:w-auto lg:h-auto lg:top-0 lg:left-0 lg:p-0 fixed top-0 w-full h-screen ${isMobileMenu ? 'left-0' : '-left-full'}`}>
 
-                            <div className="lg:hidden flex justify-between items-center bg-gray-50 py-3 border-b px-3">
+                        <div className="lg:hidden flex justify-between items-center bg-gray-50 py-3 border-b px-3">
                             <Image
                                 src={logo}
                                 weight={383}
@@ -45,13 +45,13 @@ const Header = () => {
                                 className='lg:w-32 w-24' />
 
                             <button
-                                type='button' 
+                                type='button'
                                 onClick={() => setIsMobileMenu(false)} >
                                 <IoMdClose
                                     size={25}
                                     className="text-gray-500 hover:text-primary" />
                             </button>
-                            </div>
+                        </div>
 
                         <ul className="lg:flex justify-between items-center gap-10 px-3">
                             <li className="text-gray-600 hover:text-primary hover:font-semibold">
@@ -65,7 +65,7 @@ const Header = () => {
                                 </Link>
                             </li>
                             <li className="text-gray-600 hover:text-primary hover:font-semibold">
-                                <Link href="#" className="block py-2">
+                                <Link href={WEBSITE_SHOP} className="block py-2">
                                     Shop
                                 </Link>
                             </li>
@@ -109,14 +109,14 @@ const Header = () => {
                                 </Avatar>
                             </Link>
                         }
-                            <button 
-                                type='button'
-                                className='lg:hidden block'
-                                onClick={() => setIsMobileMenu(true)} >
-                                <HiMiniBars3 
-                                    size={25}
-                                    className="text-gray-500 hover:text-primary" />
-                            </button>
+                        <button
+                            type='button'
+                            className='lg:hidden block'
+                            onClick={() => setIsMobileMenu(true)} >
+                            <HiMiniBars3
+                                size={25}
+                                className="text-gray-500 hover:text-primary" />
+                        </button>
 
 
                     </div>

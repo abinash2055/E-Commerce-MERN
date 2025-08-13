@@ -1,7 +1,7 @@
 'use client'
 
 import useFetch from '@/hooks/useFetch'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     Accordion,
     AccordionContent,
@@ -13,6 +13,8 @@ import { Slider } from '@/components/ui/slider'
 import ButtonLoading from '../ButtonLoading'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { WEBSITE_SHOP } from '@/routes/WebsiteRoute'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
 
 const Filter = () => {
 
@@ -32,6 +34,14 @@ const Filter = () => {
 
     const urlSearchParams = new URLSearchParams(searchParams.toString())
     const router = useRouter()
+
+     useEffect(() => {
+        searchParams.get('category') ? setSelectedCategory(searchParams.get('category').split(',')) : setSelectedCategory([])
+
+        searchParams.get('color') ? setSelectedColor(searchParams.get('color').split(',')) : setSelectedColor([])
+
+        searchParams.get('size') ? setSelectedSize(searchParams.get('size').split(',')) : setSelectedSize([])
+     }, [searchParams])
 
     const handlePriceChange = (value) => {
         setPriceFilter({
@@ -91,9 +101,27 @@ const Filter = () => {
          router.push(`${WEBSITE_SHOP}?${urlSearchParams}`)
     }
 
+    const handlePriceFilter = () => {
+        urlSearchParams.set('minPrice', priceFilter.minPrice)
+        urlSearchParams.set('maxPrice', priceFilter.maxPrice)
+        router.push(`${WEBSITE_SHOP}?${urlSearchParams}`)
+    }
 
   return (
     <div>
+        { 
+            searchParams.size > 0 &&
+            <Button 
+                type="button" 
+                asChild
+                variant="destructive"
+                className="w-full" >
+                <Link href={WEBSITE_SHOP}>
+                    Clear Filter
+                </Link>
+            </Button>
+        }
+
           <Accordion type="multiple" defaultValue={[ '1', '2', '3', '4' ]}>
               <AccordionItem value="1">
                   <AccordionTrigger className="uppercase font-semibold hover:no-underline">Category</AccordionTrigger>
@@ -179,6 +207,7 @@ const Filter = () => {
                         </div>
                         <div className="mt-4">
                             <ButtonLoading 
+                              onClick={handlePriceFilter}
                                 type="button"
                                 text="Filter Price"
                                 className="rounded-full" />

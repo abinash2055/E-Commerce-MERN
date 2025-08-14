@@ -73,7 +73,7 @@ const Shop = () => {
                         <Sheet
                             open={isMobileFilter}
                             onOpenChange={() => setIsMobileFilter(false)} >
-                            <SheetContent 
+                            <SheetContent
                                 className="block"
                                 side="left" >
                                 <SheetHeader className="border-b">
@@ -96,24 +96,24 @@ const Shop = () => {
                         mobileFilterOpen={isMobileFilter}
                         setMobileFilterOpen={setIsMobileFilter} />
 
-                    { 
-                        isFetching && 
-                            <div className="p-3 font-semibold text-center">
-                                Loading........
-                            </div>
+                    {
+                        isFetching &&
+                        <div className="p-3 font-semibold text-center">
+                            Loading........
+                        </div>
                     }
 
-                    { 
-                        error && 
-                            <div className="p-3 font-semibold text-center">
-                                { error.message }
-                            </div>
+                    {
+                        error &&
+                        <div className="p-3 font-semibold text-center">
+                            {error.message}
+                        </div>
                     }
 
-                    <div className="grid lg:grid-cols-3 grid-cols-2 lg:gap-10 gap-5">
-                        { data && data.pages.map(page => (
+                    <div className="grid lg:grid-cols-3 grid-cols-2 lg:gap-10 gap-5 mt-10">
+                        {data && data.pages.map(page => (
                             page.products.map(product => (
-                                <ProductBox 
+                                <ProductBox
                                     key={product._id}
                                     product={product} />
                             ))
@@ -122,19 +122,19 @@ const Shop = () => {
 
                     {/* Load More Button  */}
                     <div className="flex justify-center mt-10">
-                        { hasNextPage ?
+                        {hasNextPage ?
                             <ButtonLoading
                                 type="button"
                                 text="Load More"
                                 loading={isFetching}
                                 onClick={fetchNextPage} /> :
                             <>
-                            {
-                                !isFetching &&
-                                <span>
-                                    No more Data to load..
-                                </span>
-                            }
+                                {
+                                    !isFetching &&
+                                    <span>
+                                        No more Data to load..
+                                    </span>
+                                }
                             </>
                         }
                     </div>
@@ -143,6 +143,6 @@ const Shop = () => {
             </section>
         </div>
     )
-} 
+}
 
 export default Shop

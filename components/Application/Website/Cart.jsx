@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { BsCart2 } from "react-icons/bs";
 import {
   Sheet,
@@ -14,27 +14,54 @@ import { useDispatch, useSelector } from 'react-redux';
 import Image from 'next/image';
 import imgPlaceholder from '@/public/assets/images/img-placeholder.webp'
 import { removeFromCart } from '@/store/reducer/cartReducer';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
+import { WEBSITE_CART, WEBSITE_CHECKOUT } from '@/routes/WebsiteRoute';
+import { showToast } from '@/lib/showToast';
 
 const Cart = () => {
+
+  const [open, setOpen] = useState(false)
+
+  const [subtotal, setSubTotal] = useState(0)
+  const [discount, setDiscount] = useState(0)
+
 
   const cart = useSelector(store => store.cartStore)
   const dispatch = useDispatch()
 
+  useEffect(() => {
+    const cartProducts = cart.products
+    const totalAmount = cartProducts.reduce((sum, product) => sum + (product.sellingPrice * product.qty), 0)
+
+    const discount = cartProducts.reduce((sum, product) => sum + ((product.mrp - product.sellingPrice) * product.qty), 0)
+
+    setSubTotal(totalAmount)
+    setDiscount(discount)
+
+  }, [cart])
+
   return (
-    <Sheet>
+    <Sheet open={open} onOpenChange={setOpen}>
       <SheetTrigger className="relative">
         <BsCart2
           size={25}
           className="text-gray-500 hover:text-primary" />
+
+        <span
+          className="absolute bg-red-500 text-white text-xs rounded-full w-4 h-4 flex justify-center items-center -right-2 -top-1">
+          {cart.count}
+        </span>
+
       </SheetTrigger>
       <SheetContent>
-        <SheetHeader>
+        <SheetHeader className="py-2">
           <SheetTitle className="text-2xl">My Cart</SheetTitle>
           <SheetDescription></SheetDescription>
         </SheetHeader>
 
-        <div className="h-[calc(100vh-40px)] pb-10 pt-2">
-          <div className="h-[calc(100%-128px)] overflow-auto pe-2">
+        <div className="h-[calc(100vh-40px)] pb-10">
+          <div className="h-[calc(100%-128px)] overflow-auto px-2">
             {
               cart.count === 0 &&
               <div className="h-full flex justify-center items-center text-xl font-semibold">
@@ -53,7 +80,7 @@ const Cart = () => {
                       height={100}
                       width={100}
                       alt={product.name}
-                      className='w-20 h-20 rounded' />
+                      className='w-20 h-20 rounded border' />
                     <div>
                       <h4 className='text-lg mb-1'>{product.name}</h4>
                       <p className='text-gray-500'>
@@ -65,7 +92,7 @@ const Cart = () => {
                   <div>
                     <button
                       type="button"
-                      className="text-red-500 underline underline-offset-1 mb-2"
+                      className="text-red-500 underline underline-offset-1 mb-2 cursor-pointer"
                       onClick={() => dispatch(removeFromCart({
                         productId: product.productId,
                         variantId: product.variantId
@@ -74,17 +101,50 @@ const Cart = () => {
                     </button>
 
                     <p className='font-semibold'>
-                      {product.qty}
+                      {product.qty} X {product.sellingPrice.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}
                     </p>
 
                   </div>
-
                 </div>
               ))
             }
 
           </div>
-          <div className="h-32 border-t pt-5"></div>
+          <div className="h-32 border-t pt-5 px-2">
+            <h2 className='flex justify-between items-center text-lg font-semibold'>
+              <span>SubTotal</span>
+              <span>{subtotal?.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</span>
+            </h2>
+            <h2 className='flex justify-between items-center text-lg font-semibold'>
+              <span>Discount</span>
+              <span>{discount?.toLocaleString('en-IN', { style: 'currency', currency: 'INR' })}</span>
+            </h2>
+
+            <div className="flex justify-between gap-5 mt-3">
+              <Button
+                type="button" asChild
+                variant="secondary"
+                className="w-[200px]"
+                onClick={() => setOpen(false)}>
+                <Link href={WEBSITE_CART}>View Cart</Link>
+              </Button>
+              <Button
+                type="button" asChild
+                className="w-[200px]"
+                onClick={() => setOpen(false)}>
+                {
+                  cart.count ?
+                    <Link href={WEBSITE_CHECKOUT}>Checkout</Link>
+                    :
+                    <button
+                      type="button"
+                      onClick={() => showToast('error', "Your cart is empty !!")}
+                    >Checkout</button>
+                }
+              </Button>
+            </div>
+
+          </div>
         </div>
 
       </SheetContent>

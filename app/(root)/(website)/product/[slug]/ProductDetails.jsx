@@ -200,7 +200,7 @@ const ProductDetails = ({ product, variant, colors, sizes, reviewCount }) => {
 
                     <div className="mt-5">
                         <p className="font-bold mb-2">Quantity</p>
-                        <div className="flex items-center h-10 border h-10 w-fit rounded-full">
+                        <div className="flex items-center border h-10 w-fit rounded-full">
 
                             <button
                                 type="button"

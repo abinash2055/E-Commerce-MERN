@@ -18,6 +18,9 @@ import React, { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useDispatch, useSelector } from 'react-redux'
 import { IoCloseCircleSharp } from 'react-icons/io5'
+import z from 'zod'
+import { FaShippingFast } from 'react-icons/fa'
+import { Textarea } from '@/components/ui/textarea'
 
 const breadCrumb = {
     title: 'Checkout',
@@ -34,11 +37,16 @@ const Checkout = () => {
 
     const [subtotal, setSubTotal] = useState(0)
     const [discount, setDiscount] = useState(0)
+
     const [couponDiscountAmount, setCouponDiscountAmount] = useState(0)
+
     const [totalAmount, setTotalAmount] = useState(0)
     const [couponCode, setCouponCode] = useState('')
 
     const cart = useSelector(store => store.cartStore)
+    const auth = useSelector(store => store.authStore)
+
+    const [placingOrder, setPlacingOrder] = useState(false)
     const [verifiedCartData, setVerifiedCartData] = useState([])
 
     const [isCouponApplied, setIsCouponApplied] = useState(false)
@@ -63,17 +71,30 @@ const Checkout = () => {
 
     useEffect(() => {
         const cartProducts = cart.products
-        const subTotalAmount = cartProducts.reduce((sum, product) => sum + (product.sellingPrice * product.qty), 0)
 
-        const discount = cartProducts.reduce((sum, product) => sum + ((product.mrp - product.sellingPrice) * product.qty), 0)
+        const subTotalAmount = cartProducts.reduce(
+            (sum, product) => sum + product.sellingPrice * product.qty,
+            0
+        )
+
+        const discountAmount = cartProducts.reduce(
+            (sum, product) => sum + (product.mrp - product.sellingPrice) * product.qty,
+            0
+        )
 
         setSubTotal(subTotalAmount)
-        setDiscount(discount)
-        setTotalAmount(subTotalAmount)
+        setDiscount(discountAmount)
+
+        if (isCouponApplied && couponDiscountAmount) {
+            setTotalAmount(subTotalAmount - discountAmount - couponDiscountAmount)
+        } else {
+            setTotalAmount(subTotalAmount - discountAmount)
+        }
 
         couponForm.setValue('minShoppingAmount', subTotalAmount)
 
-    }, [cart])
+    }, [cart, couponDiscountAmount, isCouponApplied])
+
 
     // Coupon Form
     const couponFormSchema = zSchema.pick({
@@ -91,24 +112,22 @@ const Checkout = () => {
 
     const applyCoupon = async (values) => {
         setCouponLoading(true)
-
         try {
             const { data: response } = await axios.post('/api/coupon/apply', values)
-            if (!response.success) {
-                throw new Error(response.message)
-            }
+            if (!response.success) throw new Error(response.message)
 
             const discountPercentage = response.data.discountPercentage
 
-            // Get coupon discount Amount
-            setCouponDiscountAmount((subtotal * discountPercentage) / 100)
-            setTotalAmount(subtotal - ((subtotal * discountPercentage) / 100))
+            const couponDiscount = (subtotal * discountPercentage) / 100
+            setCouponDiscountAmount(couponDiscount)
+
+            setTotalAmount(subtotal - discount - couponDiscount)
 
             showToast('success', response.message)
             setCouponCode(couponForm.getValues('code'))
             setIsCouponApplied(true)
 
-            couponForm.resetField('code', '')
+            couponForm.resetField('code')
         } catch (error) {
             showToast('error', error.message)
         } finally {
@@ -120,8 +139,52 @@ const Checkout = () => {
         setIsCouponApplied(false)
         setCouponCode('')
         setCouponDiscountAmount(0)
-        setTotalAmount(subtotal)
+        setTotalAmount(subtotal - discount)
     }
+
+    // Place Order
+    const orderFormSchema = zSchema.pick({
+        name: true,
+        email: true,
+        phone: true,
+        country: true,
+        state: true,
+        city: true,
+        pincode: true,
+        landmark: true,
+        ordernote: true
+    }).extend({
+        userId: z.string().optional()
+    })
+
+    const orderForm = useForm({
+        resolver: zodResolver(orderFormSchema),
+        defaultValues: {
+            name: '',
+            email: '',
+            phone: '',
+            country: '',
+            state: '',
+            city: '',
+            pincode: '',
+            landmark: '',
+            ordernote: '',
+            userId: auth?._id
+        }
+    })
+
+    const placeOrder = async (formData) => {
+        console.log(formData)
+        setPlacingOrder(true)
+        try {
+
+        } catch (error) {
+            showToast('error', error.message)
+        } finally {
+            setPlacingOrder(false)
+        }
+    }
+
 
     return (
         <div>
@@ -138,7 +201,168 @@ const Checkout = () => {
                 </div>
                 :
                 <div className="flex lg:flex-nowrap flex-wrap gap-10 my-20 lg:px-32 px-4">
-                    <div className="lg:w-[60%] w-full"></div>
+                    <div className="lg:w-[60%] w-full">
+                        <div className="flex font-semibold gap-2 items-center">
+                            <FaShippingFast size={25} /> Shipping Address:
+                        </div>
+
+                        <div className="mt-5">
+                            <Form {...orderForm}>
+                                <form
+                                    className="grid grid-cols-2 gap-5"
+                                    onSubmit={orderForm.handleSubmit(placeOrder)}>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='name'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder=" Full Name*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='email'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input
+                                                            type="email"
+                                                            placeholder=" Email address*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='phone'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="Phone Number*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='country'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="Country*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='state'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="State*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='city'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="City*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='pincode'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="Pincode*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='landmark'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Input placeholder="Landmark*" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3 col-span-2">
+                                        <FormField
+                                            control={orderForm.control}
+                                            name='ordernote'
+                                            render={({ field }) => (
+                                                <FormItem>
+                                                    <FormControl>
+                                                        <Textarea placeholder="Enter your order Note" {...field} />
+                                                    </FormControl>
+                                                    <FormMessage />
+                                                </FormItem>
+                                            )}>
+                                        </FormField>
+                                    </div>
+
+                                    <div className="mb-3">
+                                        <ButtonLoading
+                                            type="submit"
+                                            text="Place Order"
+                                            loading={placingOrder}
+                                            className="bg-black rounded-full px-5 cursor-pointer" />
+                                    </div>
+
+                                </form>
+                            </Form>
+                        </div>
+
+                    </div>
+
                     <div className="lg:w-[40%] w-full">
                         <div className="rounded bg-gray-50 p-5 sticky top-5">
                             <h4 className='text-lg font-semibold mb-5'>Order Summary</h4>

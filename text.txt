@@ -3,14 +3,12 @@
         #    PART 1 completed
 
         ##  PART 2 done tara  
-                - Category ko
-                - Product ko 
-                - Product Variant ko
-                - Coupon ko 
-                
-        ##  Edit Button haru kina Kaam garena
+                ##  Edit Button haru kina Kaam garena
 
-        ### PART 3 started         09 : 02 : 55
+        ### PART 3 started         09 : 21 : 17
+                ###  All Checkout Page done
+                ### Payment Gateway,Integration  --> Gardina (paisa lagxa)
+                ### Order Details Page --> Gardina (paisa lagxa)
 
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

@@ -173,11 +173,27 @@ const Checkout = () => {
         }
     })
 
+    // Get Order ID
+    const getOrderId = async (amount) => {
+        try {
+            const { data: orderIdData } = await axios.post('/api/order/get-order-id', { amount })
+
+            if (!orderIdData.success) {
+                throw new Error(orderIdData.message)
+            }
+
+            return { sucess: true, order_id: orderIdData.data }
+        } catch (error) {
+            return { sucess: false, message: error.message }
+        }
+    }
+
+
     const placeOrder = async (formData) => {
-        console.log(formData)
         setPlacingOrder(true)
         try {
-
+            const generateOrderId = await getOrderId(totalAmount)
+            console.log(generateOrderId)
         } catch (error) {
             showToast('error', error.message)
         } finally {

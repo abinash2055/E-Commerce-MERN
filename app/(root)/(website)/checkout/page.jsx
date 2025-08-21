@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input'
 import useFetch from '@/hooks/useFetch'
 import { showToast } from '@/lib/showToast'
 import { zSchema } from '@/lib/zodSchema'
-import { WEBSITE_PRODUCT_DETAILS, WEBSITE_SHOP } from '@/routes/WebsiteRoute'
+import { WEBSITE_ORDER_DETAILS, WEBSITE_PRODUCT_DETAILS, WEBSITE_SHOP } from '@/routes/WebsiteRoute'
 import { addIntoCart, clearCart } from '@/store/reducer/cartReducer'
 import { zodResolver } from '@hookform/resolvers/zod'
 import axios from 'axios'
@@ -21,6 +21,9 @@ import { IoCloseCircleSharp } from 'react-icons/io5'
 import z from 'zod'
 import { FaShippingFast } from 'react-icons/fa'
 import { Textarea } from '@/components/ui/textarea'
+import Script from 'next/script'
+import { useRouter } from 'next/navigation'
+import loading from '@/public/assets/images/loading.svg'
 
 const breadCrumb = {
     title: 'Checkout',
@@ -32,6 +35,7 @@ const breadCrumb = {
 
 const Checkout = () => {
 
+    const router = useRouter()
     const dispatch = useDispatch()
 
 
@@ -39,6 +43,7 @@ const Checkout = () => {
     const [discount, setDiscount] = useState(0)
 
     const [couponDiscountAmount, setCouponDiscountAmount] = useState(0)
+    const [savingOrder, setSavingOrder] = useState(false)
 
     const [totalAmount, setTotalAmount] = useState(0)
     const [couponCode, setCouponCode] = useState('')
@@ -182,9 +187,9 @@ const Checkout = () => {
                 throw new Error(orderIdData.message)
             }
 
-            return { sucess: true, order_id: orderIdData.data }
+            return { success: true, order_id: orderIdData.data }
         } catch (error) {
-            return { sucess: false, message: error.message }
+            return { success: false, message: error.message }
         }
     }
 
@@ -193,7 +198,71 @@ const Checkout = () => {
         setPlacingOrder(true)
         try {
             const generateOrderId = await getOrderId(totalAmount)
-            console.log(generateOrderId)
+            if (!generateOrderId.success) {
+                throw new Error(generateOrderId.message)
+            }
+
+            const order_id = generateOrderId.order_id
+
+            const razOption = {
+                "key": process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+                "amount": totalAmount * 100,
+                "currency": "INR",
+                "name": "E - Store",
+                "description": "Payment for Order",
+                "image": "https://res.cloudinary.com/dagybmwdx/image/upload/v1755661105/logo-black_dicv88.webp",
+                "order_id": order_id,
+                "handler": async function (response) {
+                    setSavingOrder(true)
+                    const products = verifiedCartData.map((cartItem) => (
+                        {
+                            productId: cartItem.productId,
+                            variantId: cartItem.variantId,
+                            name: cartItem.name,
+                            qty: cartItem.qty,
+                            mrp: cartItem.mrp,
+                            sellingPrice: cartItem.sellingPrice,
+                        }
+                    ))
+
+                    const { data: paymentResponseData } = await axios.post('/api/payment/save-order', {
+                        ...formData,
+                        ...response,
+                        products: products,
+                        subtotal: subtotal,
+                        discount: discount,
+                        couponDiscountAmount: couponDiscountAmount,
+                        totalAmount: totalAmount,
+                    })
+
+                    if (paymentResponseData.success) {
+                        showToast('success', paymentResponseData.message)
+                        dispatch(clearCart())
+                        orderForm.reset()
+                        router.push(WEBSITE_ORDER_DETAILS(response.razorpay_order_id))
+                        setSavingOrder(false)
+                    } else {
+                        showToast('error', paymentResponseData.message)
+                        setSavingOrder(false)
+                    }
+                },
+                "prefill": {
+                    "name": formData.name,
+                    "email": formData.email,
+                    "contact": formData.phone
+                },
+                "theme": {
+                    "color": "#7c3aed"
+                }
+            }
+
+            const rzp = new Razorpay(razOption)
+            rzp.on('payment.failed', function (response) {
+                showToast('error', response.error.description)
+            })
+
+            rzp.open()
+
         } catch (error) {
             showToast('error', error.message)
         } finally {
@@ -204,6 +273,16 @@ const Checkout = () => {
 
     return (
         <div>
+
+            {savingOrder &&
+                <div className="h-screen w-screen fixed justify-between top-0 left-0 z-50 bg-black/10">
+                    <div className='h-screen flex justify-center items-center'>
+                        <Image src={loading.src} height={80} width={80} alt='Loading' />
+                        <h4 className='font-semibold'>Order Confirming</h4>
+                    </div>
+                </div>
+            }
+
             <WebsiteBreadcrumb props={breadCrumb} />
 
             {cart.count === 0 ?
@@ -511,6 +590,8 @@ const Checkout = () => {
                     </div>
                 </div>
             }
+
+            <Script src="https://checkout.razorpay.com/v1/checkout.js" />
         </div>
     )
 }

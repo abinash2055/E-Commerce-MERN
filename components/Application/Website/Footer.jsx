@@ -2,7 +2,7 @@ import Image from 'next/image'
 import React from 'react'
 import logo from '@/public/assets/images/logo-black.png'
 import Link from 'next/link'
-import { WEBSITE_HOME, WEBSITE_LOGIN, WEBSITE_REGISTER } from '@/routes/WebsiteRoute'
+import { USER_DASHBOARD, WEBSITE_HOME, WEBSITE_LOGIN, WEBSITE_REGISTER, WEBSITE_SHOP } from '@/routes/WebsiteRoute'
 import { IoLocationOutline } from "react-icons/io5";
 import { MdOutlinePhone } from "react-icons/md";
 import { MdOutlineEmail } from "react-icons/md";
@@ -36,19 +36,19 @@ const Footer = () => {
           <h4 className="text-xl font-bold uppercase mb-5">Categories</h4>
           <ul>
             <li className="mb-2 text-gray-500">
-              <Link href="">T-shirt</Link>
+              <Link href={`${WEBSITE_SHOP}?category=t-shirts`}>T-shirt</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Hoodies</Link>
+              <Link href={`${WEBSITE_SHOP}?category=hoodies%2Choddies`}>Hoodies</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Oversized</Link>
+              <Link href={`${WEBSITE_SHOP}?category=oversized`}>Oversized</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Full Sleeves</Link>
+              <Link href={`${WEBSITE_SHOP}?category=full-sleeves`}>Full Sleeves</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Polo</Link>
+              <Link href={`${WEBSITE_SHOP}?category=polo`}>Polo</Link>
             </li>
           </ul>
         </div>
@@ -60,10 +60,10 @@ const Footer = () => {
               <Link href={WEBSITE_HOME}>Home</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Shop</Link>
+              <Link href={WEBSITE_SHOP}>Shop</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">About</Link>
+              <Link href="/about-us">About</Link>
             </li>
             <li className="mb-2 text-gray-500">
               <Link href={WEBSITE_REGISTER}>Register</Link>
@@ -78,19 +78,19 @@ const Footer = () => {
           <h4 className="text-xl font-bold uppercase mb-5">Help Center</h4>
           <ul>
             <li className="mb-2 text-gray-500">
-              <Link href="">Register</Link>
+              <Link href={WEBSITE_REGISTER}>Register</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Login</Link>
+              <Link href={WEBSITE_LOGIN}>Login</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">My Account</Link>
+              <Link href={USER_DASHBOARD}>My Account</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Privacy Policy</Link>
+              <Link href="/privacy-policy">Privacy Policy</Link>
             </li>
             <li className="mb-2 text-gray-500">
-              <Link href="">Terms & Conditions</Link>
+              <Link href="/terms-and-conditions">Terms & Conditions</Link>
             </li>
           </ul>
         </div>

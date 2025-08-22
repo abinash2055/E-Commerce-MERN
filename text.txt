@@ -9,12 +9,14 @@
 
 
         ### PART 3 done tara      
-                ###  All Checkout Page done 09 : 21 : 17 samma all correct
+                ###  All Checkout Page done 09 : 21 : 17 samma all correct 
+
                 ### Payment Gateway,Integration  --> Gardina (paisa lagxa) tara code lekhera rakheko xu ( RazorPay method ) use gareko xu
+                
                 ### Order Details Page --> Gardina (paisa lagxa) tara code lekhera rakheko xu ( RazorPay method ) use bata pay vayesi page herna milxa
 
 
-       ### PART 4 started        
+       ### PART 4 started        01 : 19 : 50
 
 -----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

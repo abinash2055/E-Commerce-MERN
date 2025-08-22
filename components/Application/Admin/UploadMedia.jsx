@@ -23,9 +23,9 @@ const UploadMedia = ({ isMultiple, queryClient }) => {
             thumbnail_url: file.uploadInfo.thumbnail_url,
         }))
 
-        if ( uploadedFiles.length > 0 ) {
+        if (uploadedFiles.length > 0) {
             try {
-                const {data: mediaUploadResponse} = await axios.post('/api/media/create', uploadedFiles)
+                const { data: mediaUploadResponse } = await axios.post('/api/media/create', uploadedFiles)
 
                 if (!mediaUploadResponse.success) {
                     throw new Error(mediaUploadResponse.message)
@@ -39,24 +39,24 @@ const UploadMedia = ({ isMultiple, queryClient }) => {
         }
     }
 
-  return (
-    <CldUploadWidget 
-        signatureEndpoint="/api/cloudinary-signature"
-          uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPDATE_PRESET}
-          onError={handleOnError}
-          onQueuesEnd={handleOnQueueEnd}
-          config={{
-            cloud: {
-                  cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
-                  apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
-            }
+    return (
+        <CldUploadWidget
+            signatureEndpoint="/api/cloudinary-signature"
+            uploadPreset={process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET}
+            onError={handleOnError}
+            onQueuesEnd={handleOnQueueEnd}
+            config={{
+                cloud: {
+                    cloudName: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
+                    apiKey: process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY,
+                }
 
-          }}
-          options={{
-            multiple: isMultiple,
-            sources: [ 'local', 'url', 'unsplash', 'google_drive' ]
-          }}>
-            
+            }}
+            options={{
+                multiple: isMultiple,
+                sources: ['local', 'url', 'unsplash', 'google_drive']
+            }}>
+
             {({ open }) => {
                 return (
                     <Button onClick={() => open()}>
@@ -65,8 +65,8 @@ const UploadMedia = ({ isMultiple, queryClient }) => {
                     </Button>
                 );
             }}
-    </CldUploadWidget>
-  )
+        </CldUploadWidget>
+    )
 }
 
 export default UploadMedia

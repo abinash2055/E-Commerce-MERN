@@ -49,7 +49,7 @@ const Checkout = () => {
     const [couponCode, setCouponCode] = useState('')
 
     const cart = useSelector(store => store.cartStore)
-    const auth = useSelector(store => store.authStore)
+    const authStore = useSelector(store => store.authStore)
 
     const [placingOrder, setPlacingOrder] = useState(false)
     const [verifiedCartData, setVerifiedCartData] = useState([])
@@ -174,9 +174,15 @@ const Checkout = () => {
             pincode: '',
             landmark: '',
             ordernote: '',
-            userId: auth?._id
+            userId: authStore?.auth?._id
         }
     })
+
+    useEffect(() => {
+        if (authStore) {
+            orderForm.setValue('userId', authStore?.auth?._id)
+        }
+    }, [authStore])
 
     // Get Order ID
     const getOrderId = async (amount) => {

@@ -6,6 +6,10 @@ export const WEBSITE_RESETPASSWORD = "/auth/reset-password";
 // User Routes
 export const USER_DASHBOARD = "/my-account";
 
+export const USER_PROFILE = "/profile";
+
+export const USER_ORDERS = "/orders";
+
 export const WEBSITE_SHOP = "/shop";
 
 export const WEBSITE_PRODUCT_DETAILS = (slug) =>

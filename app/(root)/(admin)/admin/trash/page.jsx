@@ -3,22 +3,23 @@
 import BreadCrumb from '@/components/Application/Admin/BreadCrumb'
 import DatatableWrapper from '@/components/Application/Admin/DatatableWrapper'
 import DeleteAction from '@/components/Application/Admin/DeleteAction'
-import { 
-  Card, 
-  CardContent, 
-  CardHeader 
+import {
+  Card,
+  CardContent,
+  CardHeader
 } from '@/components/ui/card'
-import { 
-  DT_CATEGORY_COLUMN, 
-  DT_COUPON_COLUMN, 
-  DT_CUSTOMERS_COLUMN, 
-  DT_PRODUCT_COLUMN, 
+import {
+  DT_CATEGORY_COLUMN,
+  DT_COUPON_COLUMN,
+  DT_CUSTOMERS_COLUMN,
+  DT_ORDER_COLUMN,
+  DT_PRODUCT_COLUMN,
   DT_PRODUCT_VARIANT_COLUMN,
   DT_REVIEW_COLUMN,
 } from '@/lib/column'
 import { columnConfig } from '@/lib/helperFunction'
-import { 
-  ADMIN_DASHBOARD, 
+import {
+  ADMIN_DASHBOARD,
   ADMIN_TRASH
 } from '@/routes/AdminPanelRoute'
 import { useSearchParams } from 'next/navigation'
@@ -77,6 +78,14 @@ const TRASH_CONFIG = {
     exportUrl: '/api/review/export',
     deleteUrl: '/api/review/delete'
   },
+
+  orders: {
+    title: 'Orders Trash',
+    columns: DT_ORDER_COLUMN,
+    fetchUrl: '/api/orders',
+    exportUrl: '/api/orders/export',
+    deleteUrl: '/api/orders/delete'
+  },
 }
 
 const Trash = () => {
@@ -91,18 +100,18 @@ const Trash = () => {
   }, [])
 
   const action = useCallback((row, deleteType, handleDelete) => {
-    return [<DeleteAction key="delete" handleDelete={handleDelete} row={row} deleteType={deleteType} /> ]
+    return [<DeleteAction key="delete" handleDelete={handleDelete} row={row} deleteType={deleteType} />]
   }, [])
 
   return (
-      <div>
+    <div>
       <BreadCrumb breadcrumbData={breadcrumbData} />
 
       <Card className="pt-3 rounded shadow-sm gap-0">
         <CardHeader className="py-2 px-3 border-b [.border-b]:pb-2">
           <div className="flex justify-between items-center">
             <h4 className="text-xl font-semibold">{config.title}</h4>
-             
+
           </div>
         </CardHeader>
 
@@ -116,10 +125,10 @@ const Trash = () => {
             deleteEndpoint={config.deleteUrl}
             deleteType="PD"
             createAction={action}
-           />
+          />
         </CardContent>
       </Card>
-      </div>
+    </div>
   )
 }
 
